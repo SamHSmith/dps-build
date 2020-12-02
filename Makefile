@@ -1,3 +1,6 @@
+LIBS = -lcrypto
+
+
 dps-build: src/*
 	$(CC) $(CFLAGS) \
 		-g -Werror -I. \
