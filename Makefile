@@ -1,4 +1,5 @@
-LIBS = -lcrypto
+LIBS = -lcrypto -lzstd
+CFLAGS = -static -pthread
 
 
 dps-build: src/*

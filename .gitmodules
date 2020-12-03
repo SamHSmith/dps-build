@@ -1,0 +1,6 @@
+[submodule "zstd"]
+	path = zstd
+	url = https://github.com/facebook/zstd.git
+[submodule "myapp/sbase"]
+	path = myapp/sbase
+	url = https://git.suckless.org/sbase/
