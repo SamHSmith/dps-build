@@ -54,6 +54,7 @@ void write_dps_bin_pkg(struct filepathpair* fpp, int32_t fppcount)
         for(u_int32_t k = 0; k < SHA512_DIGEST_LENGTH; k++) { fputs("h", file); }
         for(u_int32_t k = 0; k < 8; k++) { fputs("s", file); }
         for(u_int32_t k = 0; k < 8; k++) { fputs("l", file); }
+        for(u_int32_t k = 0; k < 8; k++) { fputs("f", file); }
         fwrite(&fpp[i].dest_count, 4, 1, file);
         for(int32_t j = 0; j < fpp[i].dest_count; j++)
         {
@@ -123,6 +124,7 @@ void write_dps_bin_pkg(struct filepathpair* fpp, int32_t fppcount)
         fwrite(&fpp[i].blob_hash, SHA512_DIGEST_LENGTH, 1, file);
         fwrite(&fpp[i].blob_start, 8, 1, file);
         fwrite(&fpp[i].blob_length, 8, 1, file);
+        fwrite(&fpp[i].blob_final_length, 8, 1, file);
         fwrite(&fpp[i].dest_count, 4, 1, file);
         for(int32_t j = 0; j < fpp[i].dest_count; j++)
         {
