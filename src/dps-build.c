@@ -39,10 +39,12 @@ struct filepathpair {
     u_int64_t blob_start, blob_length, blob_final_length;
 };
 
-void write_dps_bin_pkg(struct filepathpair* fpp, int32_t fppcount)
+void write_dps_bin_pkg(struct filepathpair* fpp, int32_t fppcount, char* pkgname)
 {
-    FILE* file = fopen("pkg.dpsbp", "wb");
+    FILE* file = fopen("pkg.dpsbp", "w");
     fputs("dpsXbinaryXpkg", file);
+    fputs(pkgname, file);
+    fputs(":", file);
 
     u_int64_t fd_start = ftell(file);
 
@@ -117,6 +119,9 @@ void write_dps_bin_pkg(struct filepathpair* fpp, int32_t fppcount)
     fputs("dps-binary-pkg", file); // we write the magic again to show that
                                    // there was no failure reading the pkg files
 
+    fputs(pkgname, file);
+    fputs(":", file);
+
     fwrite(&fd_len, 8, 1, file); // File details length
     //file details
     for(int32_t i = 0; i < fppcount; i++)
@@ -136,7 +141,11 @@ void write_dps_bin_pkg(struct filepathpair* fpp, int32_t fppcount)
 
 int main(int argc, char* argv[])
 {
-    printf("this is dps-build\n");
+    if(argc < 2) {
+        printf("please provide a pkg name as arg1\n");
+        return 2;
+    }
+    printf("building %s...\n", argv[1]);
 
     system("rm -drf build && mkdir build && cd build && bsdtar -xf ../build.tar && chmod +x build.sh && ./build.sh");
 
@@ -212,5 +221,5 @@ int main(int argc, char* argv[])
             printf("  - %s\n", fpp[i].dest[j]);
         }
     }
-    write_dps_bin_pkg(fpp, fppcount);
+    write_dps_bin_pkg(fpp, fppcount, argv[1]);
 }
