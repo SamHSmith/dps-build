@@ -188,7 +188,36 @@ int main(int argc, char* argv[])
             bool dup = false;
             for(int32_t i = 0; i < fppindex; i++)
             {
-                if(strcmp(fpp[fppindex].local, fpp[i].local) == 0)
+                FILE* f1 = fopen(fpp[fppindex].local, "r");
+                FILE* f2 = fopen(fpp[i].local, "r");
+                fseek(f1, 0, SEEK_END);
+                size_t c1 = ftell(f1);
+                fseek(f1, 0, SEEK_SET);
+                fseek(f2, 0, SEEK_END);
+                size_t c2 = ftell(f2);
+                fseek(f2, 0, SEEK_SET);
+
+                bool same = c1 == c2;
+                if(same)
+                {
+                    char* r1 = malloc(c1);
+                    char* r2 = malloc(c2);
+                    assert(fread(r1, c1, 1, f1) == 1); // 1 means 1 * c1
+                    assert(fread(r2, c2, 1, f2) == 1);
+
+                    size_t i = 0;
+                    while(same && i < c1)
+                    {
+                        same = r1[i] == r2[i];
+                        i += 1;
+                    }
+                    free(r1);
+                    free(r2);
+                }
+                fclose(f1);
+                fclose(f2);
+
+                if(same)
                 {
                     fpp[i].dest_count += 1;
                     fpp[i].dest = realloc(fpp[i].dest, fpp[i].dest_count * sizeof(char*));
